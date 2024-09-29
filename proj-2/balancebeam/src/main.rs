@@ -1,40 +1,40 @@
 mod request;
 mod response;
 
-use clap::Clap;
+use clap::Parser;
 use rand::{Rng, SeedableRng};
 use std::net::{TcpListener, TcpStream};
 
 /// Contains information parsed from the command-line invocation of balancebeam. The Clap macros
 /// provide a fancy way to automatically construct a command-line argument parser.
-#[derive(Clap, Debug)]
-#[clap(about = "Fun with load balancing")]
+#[derive(Parser, Debug)]
+#[command(about = "Fun with load balancing")]
 struct CmdOptions {
-    #[clap(
+    #[arg(
         short,
         long,
-        about = "IP/port to bind to",
-        default_value = "0.0.0.0:1100"
+        help = "IP/port to bind to",
+        default_value_t = String::from("0.0.0.0:1100")
     )]
     bind: String,
-    #[clap(short, long, about = "Upstream host to forward requests to")]
+    #[arg(short, long, help = "Upstream host to forward requests to")]
     upstream: Vec<String>,
-    #[clap(
+    #[arg(
         long,
-        about = "Perform active health checks on this interval (in seconds)",
-        default_value = "10"
+        help = "Perform active health checks on this interval (in seconds)",
+        default_value_t = 10
     )]
     active_health_check_interval: usize,
-    #[clap(
+    #[arg(
         long,
-        about = "Path to send request to for active health checks",
-        default_value = "/"
+        help = "Path to send request to for active health checks",
+        default_value_t = String::from("/")
     )]
     active_health_check_path: String,
-    #[clap(
+    #[arg(
         long,
-        about = "Maximum number of requests to accept per IP per minute (0 = unlimited)",
-        default_value = "0"
+        help = "Maximum number of requests to accept per IP per minute (0 = unlimited)",
+        default_value_t = 0
     )]
     max_requests_per_minute: usize,
 }
